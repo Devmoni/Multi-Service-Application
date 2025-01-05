@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  blog-service:
+    build:
+      context: ./blog-service
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=your_jwt_secret_key
+      - DATABASE_URL=postgres://your_username:your_password@postgres:5432/yourdb
+    depends_on:
+      - postgres
+
+  comment-service:
+    build:
+      context: ./comment-service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=your_jwt_secret_key
+      - DATABASE_URL=postgres://your_username:your_password@postgres:5432/yourdb
+    depends_on:
+      - postgres
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=your_jwt_secret_key
+      - DATABASE_URL=postgres://your_username:your_password@postgres:5432/yourdb
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: yourdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
